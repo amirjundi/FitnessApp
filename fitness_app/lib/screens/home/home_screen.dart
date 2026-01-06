@@ -58,9 +58,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // Global key to access the drawer from child widgets
+  static final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       drawer: const AppDrawer(),
       body: IndexedStack(
         index: _currentIndex,
@@ -128,6 +132,10 @@ class _DashboardTab extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () => _HomeScreenState.scaffoldKey.currentState?.openDrawer(),
+        ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

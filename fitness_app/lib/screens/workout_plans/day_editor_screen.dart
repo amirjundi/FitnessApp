@@ -331,130 +331,132 @@ class _AddExerciseSheetState extends State<_AddExerciseSheet> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: 16,
-        right: 16,
-        top: 16,
-      ),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              widget.exerciseToEdit == null 
-                  ? (l10n?.addExercise ?? 'Add Exercise')
-                  : (l10n?.edit ?? 'Edit Exercise'),
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 16),
-
-            // Exercise Dropdown (Only if adding)
-            if (widget.exerciseToEdit == null)
-              Consumer<ExercisesProvider>(
-                builder: (context, exercisesProvider, child) {
-                  return DropdownButtonFormField<Exercise>(
-                    value: _selectedExercise,
-                    decoration: InputDecoration(
-                      labelText: l10n?.exercises ?? 'Select Exercise',
-                      prefixIcon: const Icon(Icons.search),
-                    ),
-                    items: exercisesProvider.exercises.map((ex) {
-                      return DropdownMenuItem(
-                        value: ex,
-                        child: Text(ex.name),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedExercise = value;
-                      });
-                    },
-                    validator: (value) => 
-                        value == null ? (l10n?.requiredField ?? 'Required') : null,
-                  );
-                }, 
-              )
-            else
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          left: 16,
+          right: 16,
+          top: 16,
+        ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
               Text(
-                widget.exerciseToEdit?.exerciseName ?? 'Exercise',
-                style: Theme.of(context).textTheme.titleMedium,
+                widget.exerciseToEdit == null 
+                    ? (l10n?.addExercise ?? 'Add Exercise')
+                    : (l10n?.edit ?? 'Edit Exercise'),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
+              const SizedBox(height: 16),
 
-             const SizedBox(height: 16),
-             
-             // Sets Editor
-             Text(l10n?.setDetails ?? 'Sets Configuration', style: Theme.of(context).textTheme.titleSmall),
-             const SizedBox(height: 8),
-             Container(
-               height: 200,
-               decoration: BoxDecoration(
-                 border: Border.all(color: Colors.grey.withOpacity(0.3)),
-                 borderRadius: BorderRadius.circular(8),
-               ),
-               child: ListView.separated(
-                 padding: const EdgeInsets.all(8),
-                 itemCount: _sets.length,
-                 separatorBuilder: (_,__) => const SizedBox(height: 8),
-                 itemBuilder: (context, index) {
-                   return Row(
-                     children: [
-                       Text('${l10n?.setLabel(index + 1) ?? "Set ${index + 1}"}:', 
-                           style: const TextStyle(fontWeight: FontWeight.bold)),
-                       const SizedBox(width: 12),
-                       Expanded(
-                         child: TextFormField(
-                           initialValue: _sets[index].reps.toString(),
-                           keyboardType: TextInputType.number,
-                           decoration: const InputDecoration(
-                             contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                             isDense: true,
-                             suffixText: 'Reps',
-                             border: OutlineInputBorder(),
+              // Exercise Dropdown (Only if adding)
+              if (widget.exerciseToEdit == null)
+                Consumer<ExercisesProvider>(
+                  builder: (context, exercisesProvider, child) {
+                    return DropdownButtonFormField<Exercise>(
+                      value: _selectedExercise,
+                      decoration: InputDecoration(
+                        labelText: l10n?.exercises ?? 'Select Exercise',
+                        prefixIcon: const Icon(Icons.search),
+                      ),
+                      items: exercisesProvider.exercises.map((ex) {
+                        return DropdownMenuItem(
+                          value: ex,
+                          child: Text(ex.name),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedExercise = value;
+                        });
+                      },
+                      validator: (value) => 
+                          value == null ? (l10n?.requiredField ?? 'Required') : null,
+                    );
+                  }, 
+                )
+              else
+                Text(
+                  widget.exerciseToEdit?.exerciseName ?? 'Exercise',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+
+               const SizedBox(height: 16),
+               
+               // Sets Editor
+               Text(l10n?.setDetails ?? 'Sets Configuration', style: Theme.of(context).textTheme.titleSmall),
+               const SizedBox(height: 8),
+               Container(
+                 height: 200,
+                 decoration: BoxDecoration(
+                   border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                   borderRadius: BorderRadius.circular(8),
+                 ),
+                 child: ListView.separated(
+                   padding: const EdgeInsets.all(8),
+                   itemCount: _sets.length,
+                   separatorBuilder: (_,__) => const SizedBox(height: 8),
+                   itemBuilder: (context, index) {
+                     return Row(
+                       children: [
+                         Text('${l10n?.setLabel(index + 1) ?? "Set ${index + 1}"}:', 
+                             style: const TextStyle(fontWeight: FontWeight.bold)),
+                         const SizedBox(width: 12),
+                         Expanded(
+                           child: TextFormField(
+                             initialValue: _sets[index].reps.toString(),
+                             keyboardType: TextInputType.number,
+                             decoration: const InputDecoration(
+                               contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                               isDense: true,
+                               suffixText: 'Reps',
+                               border: OutlineInputBorder(),
+                             ),
+                             onChanged: (val) => _updateSetReps(index, val),
                            ),
-                           onChanged: (val) => _updateSetReps(index, val),
                          ),
-                       ),
-                       if (_sets.length > 1)
-                         IconButton(
-                           icon: const Icon(Icons.remove_circle_outline, color: AppTheme.error),
-                           onPressed: () => _removeSet(index),
-                         ),
-                     ],
-                   );
-                 },
+                         if (_sets.length > 1)
+                           IconButton(
+                             icon: const Icon(Icons.remove_circle_outline, color: AppTheme.error),
+                             onPressed: () => _removeSet(index),
+                           ),
+                       ],
+                     );
+                   },
+                 ),
                ),
-             ),
-             TextButton.icon(
-               onPressed: _addSet,
-               icon: const Icon(Icons.add),
-               label: Text(l10n?.add ?? 'Add Set'),
-             ),
+               TextButton.icon(
+                 onPressed: _addSet,
+                 icon: const Icon(Icons.add),
+                 label: Text(l10n?.add ?? 'Add Set'),
+               ),
 
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            TextFormField(
-              controller: _notesController,
-              decoration: InputDecoration(
-                labelText: l10n?.description ?? 'Notes (Optional)',
-                prefixIcon: const Icon(Icons.note_alt_outlined),
+              TextFormField(
+                controller: _notesController,
+                decoration: InputDecoration(
+                  labelText: l10n?.description ?? 'Notes (Optional)',
+                  prefixIcon: const Icon(Icons.note_alt_outlined),
+                ),
+                maxLines: 2,
               ),
-              maxLines: 2,
-            ),
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            ElevatedButton(
-              onPressed: _save,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+              ElevatedButton(
+                onPressed: _save,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text(l10n?.save ?? 'Save'),
               ),
-              child: Text(l10n?.save ?? 'Save'),
-            ),
-            const SizedBox(height: 16),
-          ],
+              const SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
     );

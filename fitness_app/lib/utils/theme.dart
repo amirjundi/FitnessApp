@@ -39,17 +39,27 @@ class AppTheme {
     colors: [Color(0xFFFFB74D), Color(0xFFFF9800)],
   );
 
-  // Helper to get the font - using Rubik (supports Arabic)
+  // Helper to get the font - Using Noto Kufi Arabic (Official Droid Kufi successor)
   static TextStyle _getFont({
     double fontSize = 14,
     FontWeight fontWeight = FontWeight.normal,
     Color color = textPrimary,
   }) {
-    return GoogleFonts.rubik(
-      fontSize: fontSize,
-      fontWeight: fontWeight,
-      color: color,
-    );
+    try {
+      return GoogleFonts.getFont(
+        'Noto Kufi Arabic',
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+      );
+    } catch (e) {
+      // Fallback to Cairo (Kufi style) if font download fails
+      return GoogleFonts.cairo(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+      );
+    }
   }
 
   // Theme Data

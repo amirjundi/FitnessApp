@@ -378,20 +378,52 @@ class _PlayerKioskScreenState extends State<PlayerKioskScreen> {
 
   Widget _buildExerciseTile(DayExercise exercise) {
     final hasVideo = exercise.youtubeUrl != null && exercise.youtubeUrl!.isNotEmpty;
+    String? videoId;
+    String? thumbnailUrl;
+    
+    if (hasVideo) {
+      videoId = YoutubePlayer.convertUrlToId(exercise.youtubeUrl!);
+      if (videoId != null) {
+        thumbnailUrl = 'https://img.youtube.com/vi/$videoId/mqdefault.jpg';
+      }
+    }
     
     return ListTile(
       leading: Container(
-        width: 50,
+        width: 80,
         height: 50,
         decoration: BoxDecoration(
           color: AppTheme.surfaceColor,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Icon(
-          hasVideo ? Icons.play_circle_fill : Icons.fitness_center,
-          color: hasVideo ? AppTheme.primaryColor : AppTheme.textSecondary,
-          size: 28,
-        ),
+        clipBehavior: Clip.antiAlias,
+        child: thumbnailUrl != null
+            ? Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    thumbnailUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => const Icon(
+                      Icons.play_circle_fill,
+                      color: AppTheme.primaryColor,
+                      size: 28,
+                    ),
+                  ),
+                  const Center(
+                    child: Icon(
+                      Icons.play_circle_outline,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                  ),
+                ],
+              )
+            : const Icon(
+                Icons.fitness_center,
+                color: AppTheme.textSecondary,
+                size: 28,
+              ),
       ),
       title: Text(exercise.exerciseName ?? 'تمرين'),
       subtitle: Text(
