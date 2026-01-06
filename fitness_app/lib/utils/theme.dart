@@ -39,27 +39,25 @@ class AppTheme {
     colors: [Color(0xFFFFB74D), Color(0xFFFF9800)],
   );
 
-  // Helper to get the font - Using Noto Kufi Arabic (Official Droid Kufi successor)
+  // Helper to get the font - Using local NotoKufiArabic asset
   static TextStyle _getFont({
     double fontSize = 14,
     FontWeight fontWeight = FontWeight.normal,
     Color color = textPrimary,
   }) {
-    try {
-      return GoogleFonts.getFont(
-        'Noto Kufi Arabic',
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: color,
-      );
-    } catch (e) {
-      // Fallback to Cairo (Kufi style) if font download fails
-      return GoogleFonts.cairo(
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        color: color,
-      );
-    }
+    // 1. Manually specify fontFamily defined in pubspec.yaml
+    final textStyle = TextStyle(
+      fontFamily: 'NotoKufiArabic',
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color,
+    );
+    
+    // 2. If you want to use GoogleFonts as a wrapper (optional), you can do:
+    // return GoogleFonts.getFont('Noto Kufi Arabic', textStyle: textStyle);
+    // But since it's local, standard TextStyle is safer/faster.
+    
+    return textStyle;
   }
 
   // Theme Data
@@ -69,6 +67,7 @@ class AppTheme {
       brightness: Brightness.dark,
       primaryColor: primaryColor,
       scaffoldBackgroundColor: backgroundColor,
+      fontFamily: 'NotoKufiArabic', // Global Kufi font from assets
       colorScheme: const ColorScheme.dark(
         primary: primaryColor,
         secondary: primaryLight,

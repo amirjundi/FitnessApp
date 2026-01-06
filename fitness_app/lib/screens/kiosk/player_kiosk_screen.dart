@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'player_exercise_detail_screen.dart';
 import 'package:fitness_app/l10n/app_localizations.dart';
 
 import '../../models/player.dart';
@@ -434,7 +435,14 @@ class _PlayerKioskScreenState extends State<PlayerKioskScreen> {
       trailing: hasVideo
           ? const Icon(Icons.arrow_forward_ios, size: 16)
           : null,
-      onTap: hasVideo ? () => _playVideo(exercise.youtubeUrl!) : null,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => PlayerExerciseDetailScreen(exercise: exercise),
+          ),
+        );
+      },
     );
   }
 }

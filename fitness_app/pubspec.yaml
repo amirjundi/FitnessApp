@@ -58,3 +58,8 @@ flutter:
     - assets/logo.jpeg
     - assets/fonts/Amiri-Regular.ttf
     - assets/fonts/Amiri-Bold.ttf
+  
+  fonts:
+    - family: NotoKufiArabic
+      fonts:
+        - asset: assets/fonts/NotoKufiArabic-VariableFont_wght.ttf
